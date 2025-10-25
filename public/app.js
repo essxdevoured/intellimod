@@ -10,6 +10,8 @@ const sortStatus = document.getElementById('sort-status');
 let currentItems = [];
 let currentColumns = [];
 
+const HIDDEN_COLUMNS = new Set(['updatedAt']);
+
 const columnCount = () => Math.max(currentColumns.length, 1);
 
 function formatHeaderLabel(key) {
@@ -44,7 +46,7 @@ function determineColumns(records) {
   records.forEach(record => {
     if (record && typeof record === 'object' && !Array.isArray(record)) {
       Object.keys(record).forEach(key => {
-        if (!columns.includes(key)) {
+        if (!HIDDEN_COLUMNS.has(key) && !columns.includes(key)) {
           columns.push(key);
         }
       });
