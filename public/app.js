@@ -127,7 +127,18 @@ async function loadItems() {
   try {
     const response = await fetch('/api/items');
     if (!response.ok) {
-      throw new Error(`Failed to load records (${response.status}).`);
+      const errorPayload = await response.clone().json().catch(() => null);
+      let message = `Failed to load records (${response.status}).`;
+      if (errorPayload && typeof errorPayload === 'object') {
+        if (errorPayload.error) {
+          message += ` ${errorPayload.error}`;
+        }
+        const cause = errorPayload?.details?.cause;
+        if (cause) {
+          message += ` ${cause}`;
+        }
+      }
+      throw new Error(message);
     }
 
     const data = await response.json();
@@ -141,18 +152,12 @@ async function loadItems() {
     if (!sortedItemsContainer.childElementCount || sortedItemsContainer.firstElementChild?.classList.contains('status-row')) {
       setStatusRow(sortedItemsContainer, 'No sorted results yet.');
     }
-    let sourceLabel = 'Data source: local sample file (bind an R2 bucket as INVENTORY_BUCKET to use Cloudflare storage).';
-    if (data.source === 'r2') {
-      sourceLabel = `Data source: Cloudflare R2 (object: ${data.objectKey})`;
-    } else if (data.source === 'sample-fallback') {
-      sourceLabel = 'Data source: local sample fallback (Cloudflare R2 unavailable).';
-      if (data.error) {
-        sourceLabel += ` Error: ${data.error}`;
-      }
-    }
-    dataSourceLabel.textContent = sourceLabel;
+    dataSourceLabel.textContent = data.objectKey
+      ? `Data source: Cloudflare R2 (object: ${data.objectKey})`
+      : 'Data source: Cloudflare R2';
   } catch (error) {
     setStatusRow(itemsContainer, `Unable to load records: ${error.message}`, 'error-row');
+    dataSourceLabel.textContent = 'Data source: unavailable.';
   }
 }
 

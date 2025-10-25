@@ -1,5 +1,4 @@
-import sampleItems from '../../data/sample-items.json' assert { type: 'json' };
-import { json, options } from '../lib/responses.js';
+import { error, json, options } from '../lib/responses.js';
 
 const DEFAULT_OBJECT_KEY = 'aggregates/robot_counts.json';
 
@@ -58,18 +57,13 @@ export const onRequestGet = async ({ env }) => {
       return json({ items, source: 'r2', objectKey });
     } catch (err) {
       console.error('Unable to load data from R2:', err);
-      return json({
-        items: normalizeItems(sampleItems),
-        source: 'sample-fallback',
+      return error(502, 'Unable to load records from Cloudflare R2.', {
         objectKey,
-        error: err.message
+        cause: err instanceof Error ? err.message : String(err)
       });
     }
   }
-
-  return json({
-    items: normalizeItems(sampleItems),
-    source: 'sample',
+  return error(500, 'Cloudflare R2 bucket binding (INVENTORY_BUCKET) is not configured.', {
     objectKey: DEFAULT_OBJECT_KEY
   });
 };
