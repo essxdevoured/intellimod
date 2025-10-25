@@ -26,6 +26,22 @@ function normalizeItems(payload) {
     if (Array.isArray(payload.results)) {
       return payload.results;
     }
+    if (payload.counts && typeof payload.counts === 'object' && !Array.isArray(payload.counts)) {
+      const timestamp = typeof payload.updatedAt === 'string' ? payload.updatedAt : null;
+      return Object.entries(payload.counts).map(([name, count]) => {
+        const numericCount = typeof count === 'number' ? count : Number(count);
+        const row = {
+          name,
+          count: Number.isFinite(numericCount) ? numericCount : count
+        };
+
+        if (timestamp) {
+          row.updatedAt = timestamp;
+        }
+
+        return row;
+      });
+    }
   }
 
   throw new Error('R2 object does not contain a JSON array of records.');

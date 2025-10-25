@@ -12,7 +12,7 @@ A Cloudflare Pages site that reads Roblox robot count aggregates from an R2 buck
 ## Prerequisites
 
 - [Wrangler](https://developers.cloudflare.com/workers/wrangler/install-and-update/) 3.0 or newer.
-- A Cloudflare R2 bucket named `roblox-archive` containing the `aggregates/robot_counts.json` object (a JSON array of robot count records).
+- A Cloudflare R2 bucket named `roblox-archive` containing the `aggregates/robot_counts.json` object (a JSON document with an `updatedAt` timestamp and a `counts` map of pet names to quantities).
 - An OpenAI API key with access to the `gpt-4.1-mini` Responses model.
 
 ## Local development (Pages preview)
@@ -72,8 +72,9 @@ A Cloudflare Pages site that reads Roblox robot count aggregates from an R2 buck
 ## API reference
 
 - `GET /api/items`
-  - Returns `{ items: Record<string, unknown>[], source: "r2" | "sample", objectKey: string }`.
-  - Responds with HTTP 502 if the R2 binding is configured but the object cannot be read or does not contain an array.
+  - Returns `{ items: Record<string, unknown>[], source: "r2" | "sample" | "sample-fallback", objectKey: string, error?: string }`.
+  - When the R2 payload exposes a `{ counts: { [name]: number } }` map, the response normalizes it into an array of `{ name, count, updatedAt }` rows for the UI.
+  - Falls back to the bundled sample data if the R2 read fails or if the object is missing.
 - `POST /api/sort`
   - Accepts `{ items: Record<string, unknown>[], instruction?: string }`.
   - Returns the JSON schema-enforced structure from the OpenAI Responses API (`{ items: Record<string, unknown>[], notes?: string }`).
@@ -85,7 +86,7 @@ A Cloudflare Pages site that reads Roblox robot count aggregates from an R2 buck
 public/                Static HTML/CSS/JS for the catalog UI
 functions/api/items.js Pages Function that reads from R2 (or fallback data)
 functions/api/sort.js  Pages Function that proxies sorting to OpenAI
-data/sample-items.json Sample robot count records used when R2 is not bound
+data/sample-items.json Sample robot count snapshot (with `updatedAt` and `counts` map) used when R2 is not bound
 ```
 
 ## Troubleshooting
