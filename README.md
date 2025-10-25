@@ -45,13 +45,21 @@ A Cloudflare Pages site that reads Roblox robot count aggregates from an R2 buck
    wrangler secret put R2_OBJECT_KEY   # optional, defaults to aggregates/robot_counts.json
    ```
 
-4. Start the Pages dev server:
+4. Review the bindings and variables that the Pages Functions expect:
+
+   | Name               | Type        | Required | Default value                    | Description |
+   | ------------------ | ----------- | -------- | -------------------------------- | ----------- |
+   | `INVENTORY_BUCKET` | R2 binding  | ✅       | —                                | R2 bucket that stores `aggregates/robot_counts.json` (configured in `wrangler.toml`). |
+   | `OPENAI_API_KEY`   | Secret      | ✅       | —                                | OpenAI API key used by `/api/sort` when calling the Responses API. |
+   | `R2_OBJECT_KEY`    | Secret/env  | ❌       | `aggregates/robot_counts.json`   | Override the object path if the data file lives elsewhere in the bucket. |
+
+5. Start the Pages dev server:
 
    ```bash
    npm run dev
    ```
 
-5. Open http://127.0.0.1:8788 and click **Load records**. The page displays whether records were sourced from R2 or the bundled sample. Enter a sorting instruction (e.g., “Sort by highest count, then show the largest positive delta”) and click **Sort records** to invoke ChatGPT.
+6. Open http://127.0.0.1:8788 and click **Load records**. The page displays whether records were sourced from R2 or the bundled sample. Enter a sorting instruction (e.g., “Sort by highest count, then show the largest positive delta”) and click **Sort records** to invoke ChatGPT.
 
 ## Deployment (Cloudflare Pages)
 
