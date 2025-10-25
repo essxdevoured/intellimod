@@ -1,0 +1,26 @@
+[
+  {
+    "id": "item-001",
+    "name": "Cloud Storage Basics",
+    "category": "Tutorial",
+    "price": 19.99,
+    "popularity": 87,
+    "description": "A beginner-friendly guide to storing assets securely in Cloudflare R2."
+  },
+  {
+    "id": "item-002",
+    "name": "Serverless Functions Toolkit",
+    "category": "Tools",
+    "price": 29.5,
+    "popularity": 92,
+    "description": "Utilities and scripts that streamline building on Cloudflare Workers and D1."
+  },
+  {
+    "id": "item-003",
+    "name": "Edge AI Starter Pack",
+    "category": "Bundle",
+    "price": 54.0,
+    "popularity": 75,
+    "description": "Pre-trained models and infrastructure templates for deploying AI at the edge."
+  }
+]
