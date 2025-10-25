@@ -139,9 +139,16 @@ async function loadItems() {
     if (!sortedItemsContainer.childElementCount || sortedItemsContainer.firstElementChild?.classList.contains('status-row')) {
       setStatusRow(sortedItemsContainer, 'No sorted results yet.');
     }
-    dataSourceLabel.textContent = data.source === 'r2'
-      ? `Data source: Cloudflare R2 (object: ${data.objectKey})`
-      : 'Data source: local sample file (bind an R2 bucket as INVENTORY_BUCKET to use Cloudflare storage).';
+    let sourceLabel = 'Data source: local sample file (bind an R2 bucket as INVENTORY_BUCKET to use Cloudflare storage).';
+    if (data.source === 'r2') {
+      sourceLabel = `Data source: Cloudflare R2 (object: ${data.objectKey})`;
+    } else if (data.source === 'sample-fallback') {
+      sourceLabel = 'Data source: local sample fallback (Cloudflare R2 unavailable).';
+      if (data.error) {
+        sourceLabel += ` Error: ${data.error}`;
+      }
+    }
+    dataSourceLabel.textContent = sourceLabel;
   } catch (error) {
     setStatusRow(itemsContainer, `Unable to load records: ${error.message}`, 'error-row');
   }

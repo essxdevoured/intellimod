@@ -1,5 +1,5 @@
 import sampleItems from '../../data/sample-items.json' assert { type: 'json' };
-import { json, error, options } from '../lib/responses.js';
+import { json, options } from '../lib/responses.js';
 
 const DEFAULT_OBJECT_KEY = 'aggregates/robot_counts.json';
 
@@ -35,15 +35,20 @@ export const onRequestGet = async ({ env }) => {
   const bucket = env.INVENTORY_BUCKET;
   const objectKey = env.R2_OBJECT_KEY || DEFAULT_OBJECT_KEY;
 
-  try {
-    if (bucket) {
+  if (bucket) {
+    try {
       const payload = await fetchFromR2(bucket, objectKey);
       const items = normalizeItems(payload);
       return json({ items, source: 'r2', objectKey });
+    } catch (err) {
+      console.error('Unable to load data from R2:', err);
+      return json({
+        items: normalizeItems(sampleItems),
+        source: 'sample-fallback',
+        objectKey,
+        error: err.message
+      });
     }
-  } catch (err) {
-    console.error('Unable to load data from R2:', err);
-    return error(502, 'Failed to read inventory from R2.', err.message);
   }
 
   return json({
