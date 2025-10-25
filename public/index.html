@@ -3,30 +3,22 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Intellimod Inventory</title>
+    <title>Roblox Robot Counts Explorer</title>
     <link rel="stylesheet" href="/styles.css" />
   </head>
   <body>
     <header>
-      <h1>Intellimod Inventory</h1>
-      <p class="subtitle">Live product feed from Cloudflare R2 with AI-powered sorting.</p>
+      <h1>Roblox Robot Counts</h1>
+      <p class="subtitle">Live metrics streamed from Cloudflare R2 with AI-powered sorting.</p>
     </header>
 
     <main>
       <section class="panel">
-        <h2>Available items</h2>
+        <h2>Available records</h2>
         <p id="data-source" class="meta"></p>
         <div class="sheet-wrapper">
           <table class="sheet" role="grid" aria-describedby="data-source">
-            <thead>
-              <tr>
-                <th scope="col">Item name</th>
-                <th scope="col">Description</th>
-                <th scope="col">Category</th>
-                <th scope="col">Price</th>
-                <th scope="col">Popularity</th>
-              </tr>
-            </thead>
+            <thead id="items-head"></thead>
             <tbody id="items"></tbody>
           </table>
         </div>
@@ -35,35 +27,17 @@
       <section class="panel">
         <h2>Sort with ChatGPT</h2>
         <label for="instruction">Sorting instruction</label>
-        <textarea id="instruction" rows="4" placeholder="e.g. Sort by highest popularity, then lowest price"></textarea>
-        <button id="sort-button">Sort items</button>
+        <textarea id="instruction" rows="4" placeholder="e.g. Sort by highest count, then show the largest positive delta"></textarea>
+        <button id="sort-button">Sort records</button>
         <p id="sort-status" class="meta"></p>
         <div class="sheet-wrapper">
           <table class="sheet" role="grid">
-            <thead>
-              <tr>
-                <th scope="col">Item name</th>
-                <th scope="col">Description</th>
-                <th scope="col">Category</th>
-                <th scope="col">Price</th>
-                <th scope="col">Popularity</th>
-              </tr>
-            </thead>
+            <thead id="sorted-head"></thead>
             <tbody id="sorted-items"></tbody>
           </table>
         </div>
       </section>
     </main>
-
-    <template id="row-template">
-      <tr>
-        <td class="cell-name"></td>
-        <td class="cell-description"></td>
-        <td class="cell-category"></td>
-        <td class="cell-price"></td>
-        <td class="cell-popularity"></td>
-      </tr>
-    </template>
 
     <script src="/app.js" type="module"></script>
   </body>

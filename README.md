@@ -1,18 +1,18 @@
-# Intellimod Inventory
+# Roblox Robot Counts Explorer
 
-A Cloudflare Pages site that reads inventory data from an R2 bucket (via a Pages Function binding) and lets visitors reorder the list with a ChatGPT-powered sort prompt.
+A Cloudflare Pages site that reads Roblox robot count aggregates from an R2 bucket (via a Pages Function binding) and lets visitors reorder the dataset with a ChatGPT-powered sort prompt.
 
 ## Features
 
 - **Cloudflare-native architecture** – static assets are served from Pages while `/api/*` routes run as Functions with access to bound resources.
-- **R2 integration** – `GET /api/items` streams a JSON manifest from the bound R2 bucket (or falls back to local sample data during preview).
-- **ChatGPT sorting** – `POST /api/sort` sends the items and a natural-language instruction to the OpenAI Responses API with JSON-schema enforcement for deterministic output.
-- **Responsive UI** – vanilla JavaScript renders the catalog, shows the current data source, and surfaces errors without reloading the page.
+- **R2 integration** – `GET /api/items` streams the `aggregates/robot_counts.json` manifest from the bound R2 bucket (or falls back to local sample data during preview).
+- **ChatGPT sorting** – `POST /api/sort` sends the records and a natural-language instruction to the OpenAI Responses API with JSON-schema enforcement for deterministic output.
+- **Responsive, spreadsheet-style UI** – vanilla JavaScript renders the dataset in an Excel-inspired table, adapts to whatever fields are present, and surfaces errors without reloading the page.
 
 ## Prerequisites
 
 - [Wrangler](https://developers.cloudflare.com/workers/wrangler/install-and-update/) 3.0 or newer.
-- A Cloudflare R2 bucket containing a JSON array of inventory items (each item should include at least `name`, `description`, `category`, `price`, and `popularity` for the demo UI).
+- A Cloudflare R2 bucket named `roblox-archive` containing the `aggregates/robot_counts.json` object (a JSON array of robot count records).
 - An OpenAI API key with access to the `gpt-4.1-mini` Responses model.
 
 ## Local development (Pages preview)
@@ -32,8 +32,8 @@ A Cloudflare Pages site that reads inventory data from an R2 bucket (via a Pages
 
    [[r2_buckets]]
    binding = "INVENTORY_BUCKET"
-   bucket_name = "inventory"
-   preview_bucket_name = "inventory"
+   bucket_name = "roblox-archive"
+   preview_bucket_name = "roblox-archive"
    ```
 
    Cloudflare Pages automatically injects the binding as `env.INVENTORY_BUCKET`. During local preview you can omit the bucket (the site falls back to `data/sample-items.json`).
@@ -42,7 +42,7 @@ A Cloudflare Pages site that reads inventory data from an R2 bucket (via a Pages
 
    ```bash
    wrangler secret put OPENAI_API_KEY
-   wrangler secret put R2_OBJECT_KEY   # optional, defaults to items.json
+   wrangler secret put R2_OBJECT_KEY   # optional, defaults to aggregates/robot_counts.json
    ```
 
 4. Start the Pages dev server:
@@ -51,24 +51,24 @@ A Cloudflare Pages site that reads inventory data from an R2 bucket (via a Pages
    npm run dev
    ```
 
-5. Open http://127.0.0.1:8788 and click **Load inventory**. The page displays whether items were sourced from R2 or the bundled sample. Enter a sorting instruction (e.g., “Sort by highest popularity, then lowest price”) and click **Sort items** to invoke ChatGPT.
+5. Open http://127.0.0.1:8788 and click **Load records**. The page displays whether records were sourced from R2 or the bundled sample. Enter a sorting instruction (e.g., “Sort by highest count, then show the largest positive delta”) and click **Sort records** to invoke ChatGPT.
 
 ## Deployment (Cloudflare Pages)
 
 1. Create a new Pages project pointing to this repository.
 2. In the Pages dashboard, add a production R2 binding named `INVENTORY_BUCKET` and any required environment variables/secrets:
    - `OPENAI_API_KEY` (secret)
-   - `R2_OBJECT_KEY` (optional, defaults to `items.json`)
+   - `R2_OBJECT_KEY` (optional, defaults to `aggregates/robot_counts.json`)
 3. Deploy. Pages automatically builds the static assets from `public/` and deploys the Functions in `functions/`.
 
 ## API reference
 
 - `GET /api/items`
-  - Returns `{ items: Item[], source: "r2" | "sample", objectKey: string }`.
-  - Responds with HTTP 502 if the R2 binding is configured but the object cannot be read.
+  - Returns `{ items: Record<string, unknown>[], source: "r2" | "sample", objectKey: string }`.
+  - Responds with HTTP 502 if the R2 binding is configured but the object cannot be read or does not contain an array.
 - `POST /api/sort`
-  - Accepts `{ items: Item[], instruction?: string }`.
-  - Returns the JSON schema-enforced structure from the OpenAI Responses API (`{ items: Item[], notes?: string }`).
+  - Accepts `{ items: Record<string, unknown>[], instruction?: string }`.
+  - Returns the JSON schema-enforced structure from the OpenAI Responses API (`{ items: Record<string, unknown>[], notes?: string }`).
   - Responds with HTTP 500 when the `OPENAI_API_KEY` binding is missing and 502 when the OpenAI request fails.
 
 ## Repository layout
@@ -77,7 +77,7 @@ A Cloudflare Pages site that reads inventory data from an R2 bucket (via a Pages
 public/                Static HTML/CSS/JS for the catalog UI
 functions/api/items.js Pages Function that reads from R2 (or fallback data)
 functions/api/sort.js  Pages Function that proxies sorting to OpenAI
-data/sample-items.json Sample inventory used when R2 is not bound
+data/sample-items.json Sample robot count records used when R2 is not bound
 ```
 
 ## Troubleshooting

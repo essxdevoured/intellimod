@@ -1,26 +1,37 @@
 [
   {
-    "id": "item-001",
-    "name": "Cloud Storage Basics",
-    "category": "Tutorial",
-    "price": 19.99,
-    "popularity": 87,
-    "description": "A beginner-friendly guide to storing assets securely in Cloudflare R2."
+    "date": "2024-05-01",
+    "robot": "AssemblerBot",
+    "universe": "Factory Floor",
+    "count": 128476,
+    "delta": 1826
   },
   {
-    "id": "item-002",
-    "name": "Serverless Functions Toolkit",
-    "category": "Tools",
-    "price": 29.5,
-    "popularity": 92,
-    "description": "Utilities and scripts that streamline building on Cloudflare Workers and D1."
+    "date": "2024-05-01",
+    "robot": "Scout-7",
+    "universe": "Exploration League",
+    "count": 98432,
+    "delta": -512
   },
   {
-    "id": "item-003",
-    "name": "Edge AI Starter Pack",
-    "category": "Bundle",
-    "price": 54.0,
-    "popularity": 75,
-    "description": "Pre-trained models and infrastructure templates for deploying AI at the edge."
+    "date": "2024-05-01",
+    "robot": "Guardian Prime",
+    "universe": "Defense Grid",
+    "count": 76450,
+    "delta": 3104
+  },
+  {
+    "date": "2024-05-01",
+    "robot": "Harveston",
+    "universe": "Agro Valley",
+    "count": 56218,
+    "delta": 940
+  },
+  {
+    "date": "2024-05-01",
+    "robot": "Nano Swarm",
+    "universe": "MicroCity",
+    "count": 23560,
+    "delta": -178
   }
 ]

@@ -1,7 +1,7 @@
 {
   "name": "intellimod",
   "version": "1.0.0",
-  "description": "Cloudflare Pages inventory viewer with R2 binding and ChatGPT sorting",
+  "description": "Cloudflare Pages robot count viewer with R2 binding and ChatGPT sorting",
   "private": true,
   "scripts": {
     "dev": "wrangler pages dev public --compatibility-date=2024-05-01"

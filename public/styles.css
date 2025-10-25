@@ -104,15 +104,14 @@ main {
   color: #1f2933;
 }
 
-.sheet td:nth-child(4),
-.sheet td:nth-child(5) {
-  text-align: right;
-  font-variant-numeric: tabular-nums;
-}
-
-.sheet td:nth-child(1) {
+.sheet td:first-child {
   font-weight: 600;
   color: #134f2d;
+}
+
+.sheet td.cell-number {
+  text-align: right;
+  font-variant-numeric: tabular-nums;
 }
 
 .status-row td {
