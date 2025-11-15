@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Roblox Robot Counts Explorer</title>
+    <link rel="stylesheet" href="/styles.css" />
+  </head>
+  <body>
+    <header>
+      <h1>Roblox Robot Counts</h1>
+      <p class="subtitle">Live metrics streamed from Cloudflare R2 with AI-powered sorting.</p>
+    </header>
+
+    <main>
+      <section class="panel">
+        <h2>Available records</h2>
+        <p id="data-source" class="meta"></p>
+        <div class="sheet-wrapper">
+          <table class="sheet" role="grid" aria-describedby="data-source">
+            <thead id="items-head"></thead>
+            <tbody id="items"></tbody>
+          </table>
+        </div>
+      </section>
+
+      <section class="panel">
+        <h2>Sort with ChatGPT</h2>
+        <label for="instruction">Sorting instruction</label>
+        <textarea id="instruction" rows="4" placeholder="e.g. Sort by highest count, then show the largest positive delta"></textarea>
+        <button id="sort-button">Sort records</button>
+        <p id="sort-status" class="meta"></p>
+        <div class="sheet-wrapper">
+          <table class="sheet" role="grid">
+            <thead id="sorted-head"></thead>
+            <tbody id="sorted-items"></tbody>
+          </table>
+        </div>
+      </section>
+    </main>
+
+    <script src="/app.js" type="module"></script>
+  </body>
+</html>
